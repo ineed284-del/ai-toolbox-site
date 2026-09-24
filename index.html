@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Архитектор чека - три промпта, чтобы посчитать новую цену услуги</title>
+<meta name="description" content="PDF с тремя промптами для ChatGPT, Claude, GigaChat и YandexGPT. Промпт задаёт вопросы по одному и собирает целевую цену, обоснование и план перехода на 4 недели. Для специалистов индивидуальных услуг.">
+<meta property="og:title" content="Архитектор чека - три промпта вместо сотни">
+<meta property="og:description" content="Три промпта под одну задачу: сколько брать за вашу услугу. Вопросы по одному, на выходе цена, обоснование и план на 4 недели.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1e3a5f">
+<link rel="preload" href="fonts/Montserrat.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Unbounded.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- Факты - только из arhitektor-cheka.pdf и marketplaces/arhitektor-cheka/digiseller/card.md.
+     Перед правкой текста: rules/legal/no-education.md, no-guarantees.md, anglicisms.md, rules/texts/style.md.
+     Обложку PDF сюда не ставить: на ней обещание «поднять чек в 1.5-3 раза за 2-4 месяца». -->
+
+<!-- HERO: сравнение «сотни для всех» и «три под задачу» -->
+<section class="stage-field" id="top">
+  <header class="wrap topbar">
+    <a class="logo" href="#top">AI TOOLBOX</a>
+    <a class="btn btn-ghost" href="https://t.me/aitoolboxru_bot?start=site">Купить в Telegram</a>
+  </header>
+  <div class="wrap hero">
+    <div class="hero-copy">
+      <h1>Три промпта вместо сотни</h1>
+      <p class="lead">Все три про одну задачу: сколько брать за вашу услугу.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://t.me/aitoolboxru_bot?start=site">Купить за 690 ₽</a>
+        <a class="btn btn-outline" href="#inside">Что внутри</a>
+      </div>
+      <p class="facts">PDF, 37 страниц · около 20 минут на промпт · ChatGPT, Claude, GigaChat, YandexGPT</p>
+    </div>
+
+    <figure class="compare-stage" id="stage" data-view="three">
+      <div class="switch" role="group" aria-label="Что показать">
+        <button type="button" data-view="pile" aria-pressed="false">Сотни для всех</button>
+        <button type="button" data-view="three" aria-pressed="true">Три под задачу</button>
+      </div>
+      <div class="table-top">
+        <div class="pile" aria-hidden="true">
+          <span class="slip" style="--sx:-18px;--sy:-30px;--sr:-6deg;--fx:-190px;--fy:-150px;--fr:-9deg">Пост для соцсетей</span>
+          <span class="slip" style="--sx:14px;--sy:-22px;--sr:4deg;--fx:150px;--fy:-160px;--fr:7deg">Слоган для бренда</span>
+          <span class="slip" style="--sx:-8px;--sy:-10px;--sr:-2deg;--fx:-40px;--fy:-110px;--fr:-3deg">План питания</span>
+          <span class="slip" style="--sx:20px;--sy:0px;--sr:6deg;--fx:190px;--fy:-80px;--fr:11deg">Резюме</span>
+          <span class="slip" style="--sx:-22px;--sy:8px;--sr:-8deg;--fx:-200px;--fy:-40px;--fr:-12deg">Письмо клиенту</span>
+          <span class="slip" style="--sx:6px;--sy:16px;--sr:3deg;--fx:60px;--fy:-20px;--fr:4deg">Сценарий видео</span>
+          <span class="slip" style="--sx:-12px;--sy:24px;--sr:-4deg;--fx:-120px;--fy:40px;--fr:-6deg">Описание товара</span>
+          <span class="slip" style="--sx:16px;--sy:30px;--sr:5deg;--fx:170px;--fy:30px;--fr:8deg">Контент-план</span>
+          <span class="slip" style="--sx:-4px;--sy:38px;--sr:-3deg;--fx:10px;--fy:80px;--fr:-2deg">Поздравление коллегам</span>
+          <span class="slip" style="--sx:10px;--sy:44px;--sr:2deg;--fx:-190px;--fy:120px;--fr:-5deg">Бизнес-план</span>
+          <span class="slip" style="--sx:-16px;--sy:50px;--sr:-5deg;--fx:150px;--fy:130px;--fr:6deg">Идеи для отпуска</span>
+          <span class="slip" style="--sx:4px;--sy:56px;--sr:1deg;--fx:-20px;--fy:160px;--fr:3deg">Тост на свадьбу</span>
+        </div>
+        <ol class="three">
+          <li><span class="num">1</span><b>Архитектор чека</b><span>Считает цену: интервью из 6 стадий</span></li>
+          <li><span class="num">2</span><b>Аудит услуги</b><span>Готовит услугу к новой цене</span></li>
+          <li><span class="num">3</span><b>Архитектор премиум-оффера</b><span>Следующий шаг, по желанию</span></li>
+        </ol>
+      </div>
+      <figcaption id="stage-caption">Три промпта под одну задачу. Нажмите «Сотни для всех», чтобы сравнить.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- СРАВНЕНИЕ -->
+<section class="sheet">
+  <div class="wrap">
+    <h2>Чем три лучше сотни</h2>
+    <p class="intro">Сборник на сотни промптов даёт понемногу на каждую тему. Здесь все три работают на один вопрос: какая цена у вашей услуги и как на неё перейти. Промпт задаёт вопросы по одному и собирает целевую цену, обоснование для клиентов и план перехода на 4 недели.</p>
+    <dl class="versus">
+      <div class="versus-head" aria-hidden="true"><span></span><span>Обычный сборник</span><span>Архитектор чека</span></div>
+      <div><dt>Сколько промптов</dt><dd data-label="Обычный сборник">Сотни, на все случаи</dd><dd data-label="Архитектор чека">Три, по порядку</dd></div>
+      <div><dt>Как работает</dt><dd data-label="Обычный сборник">Один запрос, один ответ</dd><dd data-label="Архитектор чека">Интервью: вопросы по одному, советов до конца стадии нет</dd></div>
+      <div><dt>Из чего ответ</dt><dd data-label="Обычный сборник">Из общих слов модели</dd><dd data-label="Архитектор чека">Из ваших цифр, клиентов и страхов</dd></div>
+      <div><dt>Что на выходе</dt><dd data-label="Обычный сборник">Текст на тему</dd><dd data-label="Архитектор чека">Три сценария цены, короткое предложение для клиентов, план на 4 недели</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ПРОБЛЕМА -->
+<section class="sheet alt">
+  <div class="wrap split">
+    <div>
+      <h2>Цена «как у конкурентов»?</h2>
+      <p>Или «чтобы не было неловко». Большинство специалистов выбирают цену одним из этих двух способов и упираются в потолок часов.</p>
+      <p class="equation"><span>40 ч × 4 недели × 800 ₽</span><span>= 128 000 ₽</span></p>
+      <p class="note">Столько при полной загрузке без отпуска. Полной загрузки не бывает.</p>
+    </div>
+    <ul class="fears">
+      <li><b>«Клиенты уйдут»</b><span>Часть действительно уходит. В PDF разобрано, кто именно уходит при повышении и как посчитать доход с учётом этих потерь.</span></li>
+      <li><b>«У нас не Москва»</b><span>Это убеждение проверяется за пять минут на Авито, Профи.ру или Яндекс Услугах: отсортируйте по цене.</span></li>
+      <li><b>«Я ещё недостаточно хорош»</b><span>Чаще всего дело не в навыках. Специалист не умеет сформулировать, что на самом деле получают его клиенты.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ЧТО ВНУТРИ: три промпта -->
+<section class="sheet" id="inside">
+  <div class="wrap">
+    <h2>Что спрашивает каждый промпт</h2>
+    <p class="intro">Вы копируете промпт в чат с нейросетью и отвечаете. Ниже настоящие вопросы и стадии из промптов.</p>
+    <ol class="prompts">
+      <li>
+        <div class="p-name"><span class="num">1</span><h3>Архитектор чека</h3><p>Интервью из 6 стадий: текущее положение, скрытая ценность, ценовой потолок, цель, обоснование, план.</p></div>
+        <div class="p-asks"><span class="who">Промпт спрашивает</span><q>Какие цены у конкурентов? Нижняя, средняя, верхняя планка.</q><q>Эта цель ощущается реальной или страшной?</q></div>
+        <div class="p-gives"><b>На выходе</b>Три сценария цены: осторожный, рекомендованный, с переупаковкой услуги. Короткое предложение для клиентов и план на 4 недели.</div>
+      </li>
+      <li>
+        <div class="p-name"><span class="num">2</span><h3>Аудит услуги</h3><p>Для тех, у кого новая цена уже посчитана: готова ли услуга её выдержать.</p></div>
+        <div class="p-asks"><span class="who">Промпт спрашивает</span><q>Что в текущей версии НЕ оправдывает новую цену?</q><q>Какие возражения слышите чаще всего?</q></div>
+        <div class="p-gives"><b>На выходе</b>Слабые места по приоритетам, 3-5 действий первой очереди и срок подготовки с контрольными точками.</div>
+      </li>
+      <li>
+        <div class="p-name"><span class="num">3</span><h3>Архитектор премиум-оффера</h3><p>Следующий шаг, когда цена уже поднята: упаковать опыт в дорогой продукт или программу наставничества.</p></div>
+        <div class="p-asks"><span class="who">Промпт спрашивает</span><q>Путь и поворотные моменты</q><q>Навыки, которые можно продавать</q><q>Кому нужен ваш опыт</q></div>
+        <div class="p-gives"><b>На выходе</b>Формат, состав и обоснование цены продукта, ответы на первые возражения.</div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ЕЩЁ В PDF -->
+<section class="sheet alt">
+  <div class="wrap split">
+    <div>
+      <h2>Ещё в PDF</h2>
+      <ul class="extras">
+        <li><b>Чек-лист из 13 вопросов.</b> Поднимать цену сейчас или сначала пройти аудит услуги.</li>
+        <li><b>Шаблоны сообщений.</b> Как предупредить текущих и давних клиентов о новой цене, и ответы на возражение «дорого».</li>
+        <li><b>Подсказки к каждому промпту.</b> Если модель задаёт все вопросы сразу, там есть фраза, которая это исправляет.</li>
+        <li><b>Для любой нейросети.</b> Промпты на английском и первый промпт по стадиям для GigaChat Lite, YandexGPT Lite и бесплатного ChatGPT.</li>
+      </ul>
+    </div>
+    <div class="shots">
+      <figure>
+        <img src="img/prompt.jpg" width="720" height="1017" loading="lazy" alt="Разворот PDF с промптом №1. Текст промпта скрыт">
+        <figcaption>Разворот с промптом №1. Текст промпта здесь скрыт.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/tablica.jpg" width="720" height="644" loading="lazy" alt="Разворот PDF: таблица типичных изменений услуги после аудита по нишам">
+        <figcaption>Справочник: что чаще всего меняют в услуге после аудита.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ПОЛЬЗА -->
+<section class="sheet">
+  <div class="wrap split">
+    <div>
+      <h2>Проверьте себя по трём вопросам</h2>
+      <p>Это три пункта из чек-листа «Готов ли я поднимать цену?». Всего в нём 13 вопросов.</p>
+      <div class="tip">
+        <b>Совет из PDF для любой нейросети</b>
+        <p>Отвечайте цифрами. «5 лет, веду 25 учеников одновременно» сильнее, чем «5 лет». «С 2019 года, постоянных клиентов около 60» сильнее, чем «давно работаю». Без цифр модель выдаёт шаблонный ответ.</p>
+      </div>
+    </div>
+    <ul class="checklist">
+      <li><label><input type="checkbox"><span>Я могу описать результат услуги в измеримых терминах: не «помогаю расти», а «8 учеников сдали ЕГЭ на 85+».</span></label></li>
+      <li><label><input type="checkbox"><span>Я могу уверенно ответить на вопрос «почему так дорого?» без оправданий.</span></label></li>
+      <li><label><input type="checkbox"><span>Я знаю ценовую вилку конкурентов в своей нише и городе: нижняя, средняя и верхняя планка.</span></label></li>
+    </ul>
+  </div>
+</section>
+
+<!-- КАК ЭТО РАБОТАЕТ -->
+<section class="sheet alt">
+  <div class="wrap">
+    <h2>Четыре недели перехода</h2>
+    <p class="intro">План из PDF. Меньше четырёх недель не стоит: клиенты не должны почувствовать резкость.</p>
+    <ol class="road">
+      <li><span class="step">Сегодня</span><p>Оплачиваете в Telegram-боте картой или по СБП. PDF приходит в чат сразу после оплаты.</p></li>
+      <li><span class="step">Неделя 1</span><p>Проходите промпты №1 и №2. Новая цена определена, список улучшений готов.</p></li>
+      <li><span class="step">Неделя 2</span><p>Внедряете 2-3 улучшения из аудита, обновляете описание услуги, готовите сообщение клиентам.</p></li>
+      <li><span class="step">Неделя 3</span><p>Предупреждаете текущих клиентов и предлагаете последние записи по старой цене.</p></li>
+      <li><span class="step">Неделя 4</span><p>Обновляете профили во всех каналах. Новые клиенты записываются уже по новой цене.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ДЛЯ КОГО -->
+<section class="sheet">
+  <div class="wrap split">
+    <div>
+      <h2>Для кого</h2>
+      <p>Для специалистов индивидуальных услуг с оплатой за час или пакет: репетиторы, психологи, мастера маникюра, парикмахеры, массажисты, фитнес-тренеры, фотографы, копирайтеры, дизайнеры, бухгалтеры-фрилансеры.</p>
+      <ul class="fit">
+        <li>Вы не поднимали цену больше года.</li>
+        <li>Берёте меньше рынка и боитесь повышать.</li>
+        <li>Пора переходить от часов к пакетам, а как упаковать, непонятно.</li>
+      </ul>
+      <p class="not-fit"><b>Не подойдёт,</b> если вы продаёте товары: там цена строится от себестоимости и конкурентов. И не нужен, если вы уверены в своих ценах.</p>
+    </div>
+    <div class="limits">
+      <h3>Честно о границах</h3>
+      <p>Это инструмент. Цена, которую вы получите, зависит от ваших ответов на вопросы промпта.</p>
+      <p>Примеры и истории в PDF реконструированы по типовым сценариям. Внутри это прямо отмечено.</p>
+      <p>Финансовый результат зависит от ваших действий и не гарантируется.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ЦЕНА -->
+<section class="sheet alt" id="price">
+  <div class="wrap">
+    <div class="price-card">
+      <div>
+        <h2>Архитектор чека</h2>
+        <p class="muted">PDF, 37 страниц, русский язык и приложение на английском</p>
+        <ul>
+          <li>Три промпта: цена, аудит услуги, дорогой продукт</li>
+          <li>Подсказки к каждому промпту</li>
+          <li>Чек-лист из 13 вопросов</li>
+          <li>Шаблоны сообщений клиентам и ответы на «дорого»</li>
+          <li>План перехода на 4 недели</li>
+          <li>Версии для GigaChat Lite, YandexGPT Lite и бесплатного ChatGPT</li>
+        </ul>
+      </div>
+      <div class="price-buy">
+        <div class="price">690 ₽</div>
+        <p>Вместо того чтобы самому собирать по статьям, как считать цену и что сказать клиентам, вы получаете готовую последовательность вопросов и шаблоны.</p>
+        <a class="btn btn-primary" href="https://t.me/aitoolboxru_bot?start=site">Купить в Telegram</a>
+        <p class="pay-note">Оплата картой или по СБП через Робокассу. Чек придёт на почту, которую вы укажете при оплате. Покупая, вы принимаете условия <a href="oferta.html">оферты</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sheet">
+  <div class="wrap faq">
+    <h2>Частые вопросы</h2>
+    <div>
+      <details>
+        <summary>Я не пользовался ChatGPT. Разберусь?</summary>
+        <div><p>Промпт копируется целиком и вставляется в новый чат, дальше нейросеть сама ведёт вас по вопросам. В PDF есть страница о том, как открыть ChatGPT из России, и отдельная схема для GigaChat и YandexGPT.</p></div>
+      </details>
+      <details>
+        <summary>Здесь есть видео?</summary>
+        <div><p>Нет. Это PDF с тремя промптами. Промпты задают вопросы, как консультант, и на выходе дают документ: цену, текст для клиентов и план на 4 недели.</p></div>
+      </details>
+      <details>
+        <summary>Как я получу файл?</summary>
+        <div><p>Кнопка «Купить» ведёт в Telegram-бот @aitoolboxru_bot. Там вы оплачиваете, и бот присылает PDF в чат, обычно в течение минуты.</p></div>
+      </details>
+      <details>
+        <summary>Что если ChatGPT откажется отвечать?</summary>
+        <div><p>Промпты проверены на ChatGPT, Claude, GigaChat и YandexGPT. Если бесплатная модель задаёт все вопросы сразу, в подсказках есть фраза, которая это исправляет.</p></div>
+      </details>
+      <details>
+        <summary>Можно вернуть деньги?</summary>
+        <div><p>Цифровой товар после получения возврату не подлежит (ст. 26.1 Закона «О защите прав потребителей»), поэтому состав PDF полностью описан на этой странице. Если файл не пришёл или повреждён и мы не заменили его в течение 10 дней после обращения, деньги вернём полностью. Подробно - в <a href="oferta.html">оферте</a>.</p></div>
+      </details>
+      <details>
+        <summary>Подойдёт ли для продажи товаров или на маркетплейсах?</summary>
+        <div><p>Нет. Промпты построены на логике услуги: работа один на один и персональный результат. У товаров цена строится иначе.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="wrap">
+    <h2>Пора посчитать свою цену</h2>
+    <p>Цена «чтобы не было неловко» держит доход на месте. Двадцать минут диалога с нейросетью, и у вас будет цифра, обоснование для клиентов и план на месяц.</p>
+    <a class="btn btn-primary" href="https://t.me/aitoolboxru_bot?start=site">Купить за 690 ₽</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      Продавец: Юров Александр Владимирович, самозанятый (НПД), ИНН 500108707504<br>
+      Вопросы: <a href="mailto:aitoolbox.help@mail.ru">aitoolbox.help@mail.ru</a>
+    </div>
+    <div>
+      <a href="oferta.html">Публичная оферта</a> · <a href="https://t.me/aitoolboxru_bot?start=site">Telegram-бот</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Переключатель сравнения на первом экране. Без JS страница показывает «три под задачу».
+  (function () {
+    var stage = document.getElementById('stage');
+    var caption = document.getElementById('stage-caption');
+    var text = {
+      three: 'Три промпта под одну задачу. Нажмите «Сотни для всех», чтобы сравнить.',
+      pile: 'Так обычно выглядит сборник «для всех». Иллюстрация, темы условные.'
+    };
+    stage.querySelectorAll('.switch button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var v = b.dataset.view;
+        stage.dataset.view = v;
+        caption.textContent = text[v];
+        stage.querySelectorAll('.switch button').forEach(function (o) {
+          o.setAttribute('aria-pressed', String(o === b));
+        });
+      });
+    });
+  })();
+</script>
+</body>
+</html>
