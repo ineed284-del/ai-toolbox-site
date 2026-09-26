@@ -325,6 +325,7 @@ footer { padding: 40px 0; font-size: 14px; color: var(--muted); }
 footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
 footer a { color: var(--muted); }
 footer a:hover { color: var(--navy); }
+.nowrap { white-space: nowrap; }
 
 /* ---------- оферта ---------- */
 .doc { max-width: var(--col); margin: 0 auto; padding: 40px 24px 72px; }
