@@ -306,5 +306,20 @@
     });
   })();
 </script>
+<script>
+  // Счётчик просмотров без cookie: серверу оплаты уходят только метка из ссылки (?src=vk) и сайт,
+  // с которого пришли. Сервер хранит итоги по дням. Те же данные получают кнопки «Купить»,
+  // чтобы было видно, из какого источника доходят до оплаты.
+  (function () {
+    var label = new URLSearchParams(location.search).get('src') || '';
+    var host = '';
+    try { host = document.referrer ? new URL(document.referrer).hostname : ''; } catch (e) {}
+    var q = 's=' + encodeURIComponent(label) + '&r=' + encodeURIComponent(host);
+    new Image().src = 'https://pay.ai-toolbox.ru/c.gif?p=home&' + q;
+    document.querySelectorAll('a[href="https://pay.ai-toolbox.ru"]').forEach(function (a) {
+      a.href = 'https://pay.ai-toolbox.ru/?' + q;
+    });
+  })();
+</script>
 </body>
 </html>
