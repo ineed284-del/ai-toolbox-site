@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Калькулятор стоимости часа своей работы и цены услуги - AI Toolbox</title>
+<meta name="description" content="Посчитайте минимальную цену часа и одной услуги для самозанятого мастера или специалиста: желаемый доход, расходы, налог, оплачиваемые часы, длительность и материалы. Как назначить цену выше этой границы.">
+<link rel="canonical" href="https://ai-toolbox.ru/kalkulyator/">
+<meta property="og:title" content="Калькулятор стоимости часа своей работы и цены услуги">
+<meta property="og:description" content="Посчитайте минимальную цену часа и одной услуги для самозанятого мастера или специалиста: желаемый доход, расходы, налог, оплачиваемые часы, длительность и материалы. Как назначить цену выше этой границы.">
+<meta property="og:image" content="https://ai-toolbox.ru/img/stati/kalkulyator.webp">
+<meta name="theme-color" content="#1e3a5f">
+<link rel="preload" href="/fonts/Unbounded.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/chertezh.css">
+<link rel="stylesheet" href="/stati/stati.css">
+<!-- Собирается build.py из template.html + trafik/статьи/work/kalkulyator/final.md (принятый текст Статейника). Руками index.html не править.
+     Формулы - calc-core.js. Данные никуда не уходят: форм и счётчиков нет (152-ФЗ). Стиль - rules/design/brand.md («Чертёж»). -->
+<style>
+  .head { padding-bottom: 56px; }
+  .head .top { margin-bottom: 24px; }
+  .head h1 { font-size: 56px; line-height: 1.1; font-weight: 800; margin-bottom: 16px; }
+  .head p { font-size: 20px; line-height: 1.5; max-width: 640px; color: rgba(255, 255, 255, 0.88); margin: 0; }
+  .crumbs { font-size: 14px; color: rgba(255, 255, 255, 0.82); margin-bottom: 16px; }
+  .crumbs a { color: rgba(255, 255, 255, 0.82); }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 48px; align-items: start; padding-top: 40px; padding-bottom: 96px; }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .chip { font: 700 14px/1 "Montserrat", sans-serif; color: var(--navy); background: var(--white); border: 0; box-shadow: inset 0 0 0 2px var(--border); border-radius: var(--r-btn); padding: 12px 16px; cursor: pointer; transition: box-shadow .2s var(--ease), background-color .2s var(--ease), color .2s var(--ease); }
+  .chip:hover { box-shadow: inset 0 0 0 2px var(--navy); }
+  .chip:active { transform: translateY(1px); }
+  .chip[aria-pressed="true"] { background: var(--navy); color: var(--white); box-shadow: inset 0 0 0 2px var(--navy); }
+  .preset-note { font-size: 12px; color: var(--muted); margin: 0 0 32px; }
+
+  .group { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-card); padding: 8px 24px; margin-bottom: 24px; }
+  .group h2 { font-size: 20px; margin: 20px 0 4px; display: flex; align-items: center; gap: 12px; }
+  .group h2 span { font: 700 12px "Montserrat", sans-serif; letter-spacing: 0.12em; color: var(--orange); }
+  .field { padding: 20px 0; border-top: 1px solid var(--border); }
+  .field:first-of-type { border-top: 0; }
+  .f-top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 12px; }
+  .f-top label { font-weight: 700; font-size: 14px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .val { display: flex; align-items: baseline; gap: 4px; }
+  .val input { font: 700 20px/1.2 "Unbounded", sans-serif; color: var(--navy); width: 128px; text-align: right; border: 0; border-bottom: 1px dashed var(--muted); background: transparent; padding: 0 0 2px; letter-spacing: -0.015em; -moz-appearance: textfield; }
+  .val input::-webkit-outer-spin-button, .val input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .val input:hover { border-bottom-color: var(--navy); }
+  .val input:focus { outline: none; border-bottom: 2px solid var(--orange); }
+  .val small { font-size: 14px; color: var(--muted); font-weight: 600; }
+
+  .hint { position: relative; }
+  .hint button { width: 20px; height: 20px; border-radius: 50%; border: 0; box-shadow: inset 0 0 0 1px var(--muted); background: transparent; color: var(--muted); font: 700 12px/20px "Montserrat", sans-serif; cursor: pointer; padding: 0; }
+  .hint button:hover, .hint button[aria-expanded="true"] { background: var(--navy); color: var(--white); box-shadow: none; }
+  .hint p { display: none; position: absolute; z-index: 5; left: -8px; top: 28px; width: 280px; background: var(--navy-dark); color: var(--white); font-size: 12px; font-weight: 500; line-height: 1.5; border-radius: var(--r-sm); padding: 12px; margin: 0; box-shadow: var(--shadow); }
+  .hint button[aria-expanded="true"] + p { display: block; }
+
+  /* ползунок: дорожка как линейка с засечками */
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: transparent; cursor: pointer; margin: 0; }
+  input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(90deg, var(--navy) var(--p, 50%), var(--border) var(--p, 50%)); }
+  input[type=range]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--border); }
+  input[type=range]::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--navy); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; margin-top: -10px; border-radius: 50%; background: var(--white); border: 2px solid var(--navy); box-shadow: 0 0 0 4px rgba(249, 115, 22, 0); transition: box-shadow .2s var(--ease); }
+  input[type=range]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--white); border: 2px solid var(--navy); }
+  input[type=range]:hover::-webkit-slider-thumb, input[type=range]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.24); border-color: var(--orange); }
+  input[type=range]:focus-visible { outline: none; }
+  .ticks { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: var(--bg2); border-radius: var(--r-btn); padding: 4px; }
+  .seg button { font: 700 14px/1.3 "Montserrat", sans-serif; color: var(--navy); background: transparent; border: 0; border-radius: var(--r-sm); padding: 12px 8px; cursor: pointer; transition: background-color .2s var(--ease), color .2s var(--ease); }
+  .seg button:hover { background: var(--white); }
+  .seg button[aria-pressed="true"] { background: var(--navy); color: var(--white); }
+  .seg small { display: block; font-size: 12px; font-weight: 500; opacity: .82; }
+
+  /* результат: лист чертежа справа */
+  .out { position: sticky; top: 24px; border-radius: var(--r-card); padding: 28px; }
+  .out .sheet-no { margin-bottom: 8px; }
+  .big { font: 800 56px/1.05 "Unbounded", sans-serif; color: var(--orange-light); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .big2 { font: 700 28px/1.2 "Unbounded", sans-serif; color: var(--white); letter-spacing: -0.015em; font-variant-numeric: tabular-nums; }
+  .lbl { font-size: 14px; color: rgba(255, 255, 255, 0.82); margin: 0 0 4px; }
+  .out .sub { font-size: 12px; color: rgba(255, 255, 255, 0.76); margin: 8px 0 0; }
+  .blk { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line2); }
+  .blk h3 { font-size: 14px; margin-bottom: 16px; }
+
+  /* полоса долей: размерная линия */
+  .bar { display: flex; height: 16px; border-radius: 4px; overflow: hidden; gap: 2px; }
+  .bar i { display: block; transition: flex-basis .4s var(--ease); min-width: 2px; }
+  .c-you { background: var(--white); } .c-costs { background: rgba(255, 255, 255, 0.5); } .c-tax { background: rgba(255, 255, 255, 0.24); } .c-unpaid { background: var(--orange); }
+  .bar-dim { margin-top: 8px; }
+  .legend { list-style: none; padding: 0; margin: 12px 0 0; display: grid; grid-template-columns: 1fr; gap: 8px; font-size: 12px; color: rgba(255, 255, 255, 0.88); }
+  .legend li { display: flex; align-items: center; gap: 8px; }
+  .legend i { width: 12px; height: 12px; border-radius: 2px; flex: none; }
+  .legend b { margin-left: auto; font-weight: 700; color: var(--white); font-variant-numeric: tabular-nums; }
+
+  .week { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+  .week i { aspect-ratio: 1; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32); transition: background-color .3s var(--ease); }
+  .week i.paid { background: var(--white); box-shadow: none; }
+  .week-cap { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: rgba(255, 255, 255, 0.82); margin-top: 12px; }
+
+  .raise-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; font-size: 14px; }
+  .raise-row b { font: 700 20px "Unbounded", sans-serif; color: var(--white); }
+  .out input[type=range]::-webkit-slider-runnable-track { background: linear-gradient(90deg, var(--orange) var(--p, 50%), rgba(255, 255, 255, 0.24) var(--p, 50%)); }
+  .out input[type=range]::-moz-range-track { background: rgba(255, 255, 255, 0.24); }
+  .out input[type=range]::-moz-range-progress { background: var(--orange); }
+  .out input[type=range]::-webkit-slider-thumb { background: var(--navy); border-color: var(--orange); }
+  .raise-out { font-size: 14px; margin: 12px 0 0; color: rgba(255, 255, 255, 0.88); }
+  .raise-out b { color: var(--orange-light); }
+
+  .how { margin-top: 24px; }
+  .how summary { cursor: pointer; font-weight: 700; color: var(--navy); list-style: none; }
+  .how summary::-webkit-details-marker { display: none; }
+  .how summary::before { content: "+ "; color: var(--orange); }
+  .how[open] summary::before { content: "- "; }
+  .how ol { font-size: 14px; padding-left: 20px; margin: 12px 0 0; font-variant-numeric: tabular-nums; }
+  .how li { margin-bottom: 8px; }
+
+  .offer { margin-top: 32px; border-radius: var(--r-card); padding: 32px; }
+  .offer h2 { font-size: 28px; margin-bottom: 12px; }
+  .offer p { color: rgba(255, 255, 255, 0.88); }
+  .offer-row { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+  .offer-row a:not(.btn) { color: var(--white); font-weight: 700; }
+  .disclaimer { font-size: 14px; color: var(--muted); margin-top: 24px; }
+  .more { font-weight: 700; }
+
+  /* панель итога снизу на телефоне */
+  .dock { display: none; }
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; gap: 24px; padding-bottom: 120px; }
+    .out { position: static; }
+    .head h1 { font-size: 40px; }
+    .dock { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--navy-dark); color: var(--white); padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); justify-content: space-between; gap: 16px; box-shadow: 0 -8px 24px rgba(21, 45, 74, 0.28); transition: transform .3s var(--ease); }
+    .dock.away { transform: translateY(110%); }
+    .dock div { font-size: 12px; color: rgba(255, 255, 255, 0.82); }
+    .dock b { display: block; font: 700 20px/1.2 "Unbounded", sans-serif; color: var(--orange-light); font-variant-numeric: tabular-nums; }
+    .dock div + div b { color: var(--white); }
+    .dock a { align-self: center; color: var(--white); font-size: 14px; font-weight: 700; }
+  }
+  @media (max-width: 600px) {
+    .head h1 { font-size: 28px; }
+    .head p { font-size: 16px; }
+    .group { padding: 4px 16px; }
+    .out, .offer { padding: 24px 20px; }
+    .big { font-size: 40px; }
+    .val input { width: 112px; font-size: 16px; }
+    .hint p { width: 240px; }
+  }
+  .loss-t { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+  .loss-t th, .loss-t td { text-align: left; padding: 8px 0; border-bottom: 1px solid var(--line2); color: rgba(255, 255, 255, 0.88); }
+  .loss-t th { font-size: 12px; color: rgba(255, 255, 255, 0.76); font-weight: 700; }
+</style>
+</head>
+<body>
+<header class="dark head">
+  <div class="wrap top">
+    <a class="logo" href="/">AI TOOLBOX</a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="/stati/">Статьи</a>
+      <a class="hide-m" href="/kalkulyator/" aria-current="page">Калькулятор</a>
+      <a class="btn btn-outline btn-sm" href="https://pay.ai-toolbox.ru">Купить</a>
+    </nav>
+  </div>
+  <div class="wrap">
+    <p class="crumbs"><a href="/">Главная</a> / <a href="/stati/">Статьи</a> / Калькулятор</p>
+    <h1>Калькулятор стоимости часа своей работы</h1>
+    <p>Минимальная цена часа и одной услуги по вашим цифрам. Считает в браузере, данные никуда не отправляются.</p>
+    <p class="st-meta">Опубликовано <time datetime="2026-11-04">4 ноября 2026</time> · 4 мин чтения</p>
+  </div>
+</header>
+
+<main class="wrap layout">
+  <form id="calc" onsubmit="return false" aria-label="Данные для расчёта">
+    <div class="presets" role="group" aria-label="Готовые примеры">
+      <button type="button" class="chip" data-preset="manikyur" aria-pressed="true">Маникюр</button>
+      <button type="button" class="chip" data-preset="repetitor" aria-pressed="false">Репетитор</button>
+      <button type="button" class="chip" data-preset="massazh" aria-pressed="false">Массаж</button>
+      <button type="button" class="chip" data-preset="own" aria-pressed="false">Своё</button>
+    </div>
+    <p class="preset-note">Значения - условный пример, поправьте под себя.</p>
+
+    <section class="group">
+      <h2><span>01</span>Ваш месяц</h2>
+      <div class="field" data-k="income" data-min="0" data-max="300000" data-step="1000" data-unit="₽">
+        <div class="f-top"><label for="income">Сколько хотите получать <span class="hint"><button type="button" aria-expanded="false" aria-label="Пояснение">?</button><p>Остаётся у вас после налога и расходов на работу.</p></span></label><span class="val"><input id="income-n" type="text" inputmode="numeric" aria-label="Доход в месяц, точно"><small>₽</small></span></div>
+        <input type="range" id="income">
+      </div>
+      <div class="field" data-k="costs" data-min="0" data-max="100000" data-step="500" data-unit="₽">
+        <div class="f-top"><label for="costs">Постоянные расходы <span class="hint"><button type="button" aria-expanded="false" aria-label="Пояснение">?</button><p>Аренда места, связь, сервис записи, откладывание на замену инструмента. Без материалов на клиента.</p></span></label><span class="val"><input id="costs-n" type="text" inputmode="numeric" aria-label="Расходы в месяц, точно"><small>₽</small></span></div>
+        <input type="range" id="costs">
+      </div>
+      <div class="field" data-k="hours" data-min="1" data-max="70" data-step="1" data-unit="ч">
+        <div class="f-top"><label for="hours">Часов работы в неделю</label><span class="val"><input id="hours-n" type="text" inputmode="numeric" aria-label="Часов в неделю, точно"><small>ч</small></span></div>
+        <input type="range" id="hours">
+      </div>
+      <div class="field" data-k="share" data-min="10" data-max="100" data-step="5" data-unit="%">
+        <div class="f-top"><label for="share">Из них оплачиваются <span class="hint"><button type="button" aria-expanded="false" aria-label="Пояснение">?</button><p>Переписка, запись, закупки, генеральная уборка и окна между клиентами не оплачиваются. Не знаете - оставьте 70.</p></span></label><span class="val"><input id="share-n" type="text" inputmode="numeric" aria-label="Доля оплачиваемых часов, точно"><small>%</small></span></div>
+        <input type="range" id="share">
+      </div>
+      <div class="field" data-k="rest" data-min="0" data-max="12" data-step="1" data-unit="нед.">
+        <div class="f-top"><label for="rest">Недель отдыха в году</label><span class="val"><input id="rest-n" type="text" inputmode="numeric" aria-label="Недель отдыха, точно"><small>нед.</small></span></div>
+        <input type="range" id="rest">
+      </div>
+      <div class="field">
+        <div class="f-top"><label id="tax-l">Налог</label></div>
+        <div class="seg" role="group" aria-labelledby="tax-l" id="tax">
+          <button type="button" data-tax="4">4 %<small>от людей</small></button>
+          <button type="button" data-tax="6">6 %<small>от ИП и компаний</small></button>
+          <button type="button" data-tax="0">0 %<small>без налога</small></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2><span>02</span>Ваша услуга</h2>
+      <div class="field" data-k="dur" data-min="0.25" data-max="8" data-step="0.25" data-unit="ч">
+        <div class="f-top"><label for="dur">Длительность <span class="hint"><button type="button" aria-expanded="false" aria-label="Пояснение">?</button><p>Вместе с подготовкой места и уборкой после клиента.</p></span></label><span class="val"><input id="dur-n" type="text" inputmode="decimal" aria-label="Длительность, точно"><small>ч</small></span></div>
+        <input type="range" id="dur">
+      </div>
+      <div class="field" data-k="mat" data-min="0" data-max="3000" data-step="10" data-unit="₽">
+        <div class="f-top"><label for="mat">Материалы на одну услугу <span class="hint"><button type="button" aria-expanded="false" aria-label="Пояснение">?</button><p>Если материалы уже в постоянных расходах, поставьте 0.</p></span></label><span class="val"><input id="mat-n" type="text" inputmode="numeric" aria-label="Материалы, точно"><small>₽</small></span></div>
+        <input type="range" id="mat">
+      </div>
+    </section>
+
+    <details class="how">
+      <summary>Как посчитано</summary>
+      <ol id="steps"></ol>
+    </details>
+    <p class="disclaimer">Расчёт показывает нижнюю границу по вашим цифрам. Он не учитывает спрос в вашем городе и не обещает, что клиенты согласятся на эту цену.</p>
+    <p><a class="more" href="#rasschet">Подробно о расчёте и как назначить цену</a></p>
+  </form>
+
+  <aside class="out dark" id="out" aria-live="polite">
+    <p class="sheet-no">Итог · нижняя граница</p>
+    <p class="lbl">Минимальная цена часа</p>
+    <div class="big" id="o-hour">-</div>
+    <p class="lbl" style="margin-top:16px">Минимальная цена одной услуги</p>
+    <div class="big2" id="o-service">-</div>
+    <p class="sub" id="o-sub"></p>
+
+    <div class="blk">
+      <h3>Из чего складывается цена часа</h3>
+      <div class="bar" id="bar"><i class="c-you"></i><i class="c-costs"></i><i class="c-tax"></i><i class="c-unpaid"></i></div>
+      <div class="dim bar-dim" aria-hidden="true"><i></i><span id="bar-dim">100 %</span><i></i></div>
+      <ul class="legend">
+        <li><i class="c-you"></i>Вам на руки<b id="l-you"></b></li>
+        <li><i class="c-costs"></i>Расходы<b id="l-costs"></b></li>
+        <li><i class="c-tax"></i>Налог<b id="l-tax"></b></li>
+        <li><i class="c-unpaid"></i>Неоплачиваемое время<b id="l-unpaid"></b></li>
+      </ul>
+    </div>
+
+    <div class="blk">
+      <h3>Ваша неделя</h3>
+      <div class="week" id="week" aria-hidden="true"></div>
+      <div class="week-cap"><span id="w-paid"></span><span id="w-free"></span></div>
+    </div>
+
+    <div class="blk">
+      <h3>Если поднять цену</h3>
+      <div class="raise-row"><span>Подниму на</span><b id="r-p">20 %</b></div>
+      <input type="range" id="raise" min="0" max="60" step="5" value="20" aria-label="На сколько процентов поднять цену">
+      <p class="raise-out" id="r-out"></p>
+      <table class="loss-t"><thead><tr><th>Повышение</th><th>Можно потерять</th></tr></thead>
+        <tbody><tr><td>+10 %</td><td>9 %</td></tr><tr><td>+20 %</td><td>17 %</td></tr><tr><td>+30 %</td><td>23 %</td></tr><tr><td>+50 %</td><td>33 %</td></tr></tbody></table>
+    </div>
+  </aside>
+</main>
+
+<section class="wrap st-calc-article" id="rasschet">
+  <article class="st-prose">
+<p>Калькулятор показывает нижнюю границу: меньше брать нельзя, иначе вы работаете себе в убыток. Сколько брать в итоге, решают ещё рынок и то, что получает клиент. Об этом ниже.</p>
+<h2 id="r1">Как считается цена часа</h2>
+<p class="st-formula">Минимальная цена часа = (сколько хотите получать + постоянные расходы) / (1 - налог) / оплачиваемые часы в месяц.</p>
+<ol>
+<li><strong>Сколько хотите получать.</strong> Сумма, которая остаётся у вас в месяц после налога и расходов на работу.</li>
+<li><strong>Постоянные расходы.</strong> Аренда места, связь, сервис записи, откладывание на замену инструмента. Материалы на каждого клиента сюда не входят, для них отдельное поле.</li>
+<li><strong>Налог.</strong> Самозанятые платят 4 % с оплат от людей и 6 % с оплат от ИП и организаций. Пока не израсходован вычет 10 000 ₽, ставки ниже: 3 % и 4 %. Налог берётся со всей выручки, поэтому сумму делим на 0,96 при ставке 4 % и на 0,94 при ставке 6 %. Без налога делить не нужно.</li>
+<li><strong>Оплачиваемые часы.</strong> Часы в неделю × (52 - недель отдыха) / 12 × доля оплачиваемых часов. Переписка, запись, закупки, генеральная уборка и окна между клиентами не оплачиваются. Подготовку места и уборку после клиента сюда не относите: они входят в длительность услуги. Если не знаете свою долю, начните с 70 % и через месяц уточните по своему журналу записи.</li>
+</ol>
+<h2 id="r2">Как считается цена услуги</h2>
+<p class="st-formula">Минимальная цена услуги = цена часа × длительность + материалы / (1 - налог).</p>
+<p>Налог в цене часа уже учтён, поэтому её просто умножаем на длительность. Отдельно налог добавляется только к материалам: они в цену часа не входят.</p>
+<p>Длительность считайте вместе с подготовкой места и уборкой после клиента. Материалы делим на 0,96 (при ставке 6 % - на 0,94) по той же причине, что и выше: налог берётся и с той части цены, которая уходит на материалы.</p>
+<h2 id="r3">Пример</h2>
+<p>Условный пример, это значения калькулятора по умолчанию.</p>
+<div class="st-table"><table>
+<thead>
+<tr>
+<th>Что</th>
+<th>Значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Хочу получать</td>
+<td>80 000 ₽ в месяц</td>
+</tr>
+<tr>
+<td>Постоянные расходы</td>
+<td>12 000 ₽ в месяц</td>
+</tr>
+<tr>
+<td>Работаю</td>
+<td>30 часов в неделю, 4 недели в году отдыхаю</td>
+</tr>
+<tr>
+<td>Оплачиваемых часов</td>
+<td>70 %, это 84 часа в месяц</td>
+</tr>
+<tr>
+<td>Нужно выручить</td>
+<td>(80 000 + 12 000) / 0,96 = 95 833 ₽</td>
+</tr>
+<tr>
+<td><strong>Минимальная цена часа</strong></td>
+<td>95 833 / 84 = <strong>1 141 ₽</strong></td>
+</tr>
+<tr>
+<td>Услуга 2 часа, материалы 180 ₽</td>
+<td>1 141 × 2 + 180 / 0,96 = 2 282 + 188 = <strong>2 470 ₽</strong> (с округлением цены часа и материалов)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="r4">Частые ошибки</h2>
+<ul>
+<li><strong>Делить на все рабочие часы.</strong> Получится цена, при которой вы получаете меньше, чем рассчитывали.</li>
+<li><strong>Забыть про отдых.</strong> Если в году вы не работаете месяц, это учитывается в поле «недель отдыха».</li>
+<li><strong>Считать материалы дважды.</strong> Если материалы уже в постоянных расходах, оставьте поле материалов пустым.</li>
+<li><strong>Прибавить налог ещё раз.</strong> Он уже учтён в цене часа и в части цены за материалы. Не добавляйте его к готовой цене.</li>
+<li><strong>Не пересчитывать.</strong> Аренда и материалы дорожают. Пересчитывайте раз в полгода или после заметного изменения расходов.</li>
+</ul>
+<h2 id="r5">Как назначить цену выше нижней границы</h2>
+<p>Цену обычно выбирают одним из трёх способов. У каждого есть слабое место, поэтому надёжнее пройти все три и сравнить.</p>
+<div class="st-table"><table>
+<thead>
+<tr>
+<th>Способ</th>
+<th>Что даёт</th>
+<th>Слабое место</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>От затрат (калькулятор выше)</td>
+<td>нижнюю границу</td>
+<td>рынку всё равно, сколько вам нужно</td>
+</tr>
+<tr>
+<td>Как у других</td>
+<td>цену, которая не удивит клиента</td>
+<td>чужая цена не знает ваших расходов и загрузки</td>
+</tr>
+<tr>
+<td>От того, что получает клиент</td>
+<td>основание брать выше средней</td>
+<td>результат нужно описать словами клиента и не обещать то, что от вас не зависит</td>
+</tr>
+</tbody>
+</table></div>
+<p>Как свести:</p>
+<ol>
+<li>Посчитайте нижнюю границу в калькуляторе.</li>
+<li>Найдите вилку рынка в своём городе на Авито, Профи.ру или Яндекс Услугах: нижнюю, среднюю и верхнюю цену. Отсортируйте по цене и посмотрите, как описывают услугу те, кто наверху.</li>
+<li>Опишите одной-двумя фразами, что получает клиент. Например, «покрытие, которое держится три недели» вместо «маникюр».</li>
+<li>Выберите место в вилке. Если нижняя граница выше средней цены рынка, ваше место в верхней части, и нужно описание, которое объясняет цену. Если и это не помогает, посмотрите на расходы и загрузку: иногда дело в них.</li>
+</ol>
+<h2 id="r6">Если цена ниже границы</h2>
+<p>Поднимать цену страшно, потому что часть клиентов уйдёт. Таблица под калькулятором показывает, сколько их может уйти без потери выручки: при повышении на 20 % - 17 %, при 30 % - 23 %.</p>
+<p>Выбрать саму цену и подготовить переход помогает <a href="https://ai-toolbox.ru/">«Архитектор чека»</a>. Это PDF с тремя промптами для ChatGPT, GigaChat, YandexGPT и Claude. Нейросеть задаёт вопросы по одному о ваших часах, расходах, клиентах и конкурентах и собирает три варианта цены: осторожный, рекомендованный и с переупаковкой услуги. Плюс короткое объяснение для клиентов и план перехода на 4 недели.</p>
+  </article>
+</section>
+
+<section class="wrap" style="padding-bottom:96px">
+  <div class="offer dark">
+    <h2>Нижняя граница есть. Какую цену назначить?</h2>
+    <p>«Архитектор чека» - PDF с тремя промптами для ChatGPT, Claude, GigaChat и YandexGPT. Промпт задаёт вопросы по одному и собирает три сценария цены, короткое предложение для клиентов и план перехода на 4 недели.</p>
+    <div class="offer-row"><a class="btn btn-primary" href="https://pay.ai-toolbox.ru">Купить за 690 ₽</a><a href="/#inside">Что внутри</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>Самозанятый Юров Александр Владимирович, ИНН 500108707504, г.&nbsp;Новосибирск<br>
+      Почта: <a href="mailto:aitoolbox.help@yandex.ru">aitoolbox.help@yandex.ru</a></div>
+    <div><a href="/oferta.html">Публичная оферта</a> · <a href="/politika.html">Политика обработки персональных данных</a></div>
+  </div>
+</footer>
+
+<div class="dock" id="dock" aria-hidden="true">
+  <div>Час<b id="d-hour">-</b></div>
+  <div>Услуга<b id="d-service">-</b></div>
+  <a href="#out">Подробнее</a>
+</div>
+
+<script src="/kalkulyator/calc-core.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var keys = ["income", "costs", "hours", "share", "rest", "dur", "mat"];
+  var state = Object.assign({}, Calc.PRESETS.manikyur);
+
+  function setFill(r) { r.style.setProperty("--p", ((r.value - r.min) / (r.max - r.min) * 100) + "%"); }
+
+  document.querySelectorAll(".field[data-k]").forEach(function (f) {
+    var k = f.dataset.k, r = $(k), n = $(k + "-n");
+    r.min = f.dataset.min; r.max = f.dataset.max; r.step = f.dataset.step;
+    r.addEventListener("input", function () { state[k] = +r.value; n.value = Calc.num(state[k], 2); setFill(r); own(); calc(); });
+    n.addEventListener("input", function () { var x = parseFloat(String(n.value).replace(/\s/g, "").replace(",", ".")); if (isNaN(x)) return; state[k] = x; r.value = x; setFill(r); own(); calc(); });
+    n.addEventListener("blur", function () { n.value = Calc.num(state[k], 2); });
+  });
+  function fill() {
+    keys.forEach(function (k) { $(k).value = state[k]; $(k + "-n").value = Calc.num(state[k], 2); setFill($(k)); });
+    document.querySelectorAll("#tax button").forEach(function (b) { b.setAttribute("aria-pressed", String(+b.dataset.tax === state.tax)); });
+  }
+  function own() { document.querySelectorAll(".chip").forEach(function (c) { c.setAttribute("aria-pressed", String(c.dataset.preset === "own")); }); }
+
+  document.querySelectorAll(".chip").forEach(function (c) {
+    c.addEventListener("click", function () {
+      document.querySelectorAll(".chip").forEach(function (x) { x.setAttribute("aria-pressed", String(x === c)); });
+      if (c.dataset.preset !== "own") { state = Object.assign({}, Calc.PRESETS[c.dataset.preset]); fill(); calc(); }
+    });
+  });
+  document.querySelectorAll("#tax button").forEach(function (b) {
+    b.addEventListener("click", function () { state.tax = +b.dataset.tax; fill(); calc(); });
+  });
+  document.querySelectorAll(".hint button").forEach(function (b) {
+    b.addEventListener("click", function (e) { e.preventDefault(); var open = b.getAttribute("aria-expanded") === "true";
+      document.querySelectorAll(".hint button").forEach(function (x) { x.setAttribute("aria-expanded", "false"); });
+      b.setAttribute("aria-expanded", String(!open)); });
+  });
+  document.addEventListener("click", function (e) { if (!e.target.closest(".hint")) document.querySelectorAll(".hint button").forEach(function (x) { x.setAttribute("aria-expanded", "false"); }); });
+
+  // плавная смена чисел, без дёрганья
+  var shown = {};
+  function tween(id, to) {
+    var el = $(id), from = shown[id] == null ? to : shown[id], t0 = performance.now();
+    shown[id] = to;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || from === to) { el.textContent = Calc.rub(to); return; }
+    (function step(t) { var k = Math.min(1, (t - t0) / 280), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = Calc.rub(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); })(t0);
+  }
+  var pct = function (x) { return Math.round(x * 100) + " %"; };
+
+  function calc() {
+    var r = Calc.compute(state);
+    if (!r.ok) { ["o-hour", "o-service", "d-hour", "d-service"].forEach(function (i) { $(i).textContent = "-"; shown[i] = null; });
+      $("o-sub").textContent = "Укажите часы и долю оплачиваемых часов."; return; }
+    tween("o-hour", r.hour); tween("d-hour", r.hour);
+    if (r.service) { tween("o-service", r.service); tween("d-service", r.service); } else { $("o-service").textContent = "-"; $("d-service").textContent = "-"; }
+    $("o-sub").textContent = "Оплачиваемых часов в месяц: около " + Calc.num(r.billable) + " из " + Calc.num(r.allHours) + ".";
+
+    var bars = $("bar").children, p = r.parts, order = ["you", "costs", "tax", "unpaid"];
+    order.forEach(function (k, i) { bars[i].style.flex = "0 0 " + (p[k] * 100) + "%"; $("l-" + k).textContent = pct(p[k]); });
+    $("bar-dim").textContent = "цена часа " + Calc.rub(r.hour);
+
+    var w = $("week"), total = Math.max(1, r.hoursPerWeek);
+    if (w.children.length !== total) { w.innerHTML = ""; for (var i = 0; i < total; i++) w.appendChild(document.createElement("i")); }
+    Array.prototype.forEach.call(w.children, function (c, i) { c.className = i < r.paidPerWeek ? "paid" : ""; });
+    $("w-paid").textContent = r.paidPerWeek + " ч оплачиваются";
+    $("w-free").textContent = (r.hoursPerWeek - r.paidPerWeek) + " ч - переписка, запись, окна";
+
+    $("steps").innerHTML = Calc.steps(r).map(function (s) { return "<li>" + s + "</li>"; }).join("");
+    raise(r);
+  }
+  function raise(r) {
+    r = r || Calc.compute(state);
+    var p = +$("raise").value; setFill($("raise"));
+    $("r-p").textContent = p + " %";
+    if (!r.ok) return;
+    $("r-out").innerHTML = p ? "Можно потерять до <b>" + pct(Calc.loss(p)) + " клиентов</b>, выручка не упадёт. Цена часа станет " + Calc.rub(r.hour * (1 + p / 100)) + "."
+                             : "Сдвиньте ползунок, чтобы увидеть, сколько клиентов можно потерять без потери выручки.";
+  }
+  $("raise").addEventListener("input", function () { raise(); });
+
+  // панель снизу прячется, когда итог и так на экране
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { $("dock").classList.toggle("away", es[0].isIntersecting); }).observe($("out"));
+
+  fill(); calc();
+})();
+</script>
+<script src="/motion.js"></script>
+</body>
+</html>

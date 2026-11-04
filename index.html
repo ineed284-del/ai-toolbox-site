@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -9,183 +9,304 @@
 <meta property="og:description" content="Три промпта под одну задачу: сколько брать за вашу услугу. Вопросы по одному, на выходе цена, обоснование и план на 4 недели.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#1e3a5f">
-<link rel="preload" href="fonts/Montserrat.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/Unbounded.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<!-- Факты - только из arhitektor-cheka.pdf и marketplaces/arhitektor-cheka/digiseller/card.md.
+<link rel="preload" href="/fonts/Montserrat.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/Unbounded.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/chertezh.css">
+<link rel="canonical" href="https://ai-toolbox.ru/">
+<!-- Стиль «Чертёж» (rules/design/brand.md). Факты - только из arhitektor-cheka.pdf и marketplaces/arhitektor-cheka/digiseller/card.md.
      Перед правкой текста: rules/legal/no-education.md, no-guarantees.md, anglicisms.md, rules/texts/style.md.
      Обложку PDF сюда не ставить: на ней обещание «поднять чек в 1.5-3 раза за 2-4 месяца». -->
+<style>
+  .hero { padding-bottom: 96px; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 56px; align-items: center; padding-top: 48px; }
+  .hero h1 { font-size: 72px; line-height: 1.05; font-weight: 800; margin-bottom: 24px; }
+  .hero h1 .nw { white-space: nowrap; }
+  .hero h1 em { font-style: normal; color: var(--orange-light); }
+  .lead { font-size: 20px; line-height: 1.5; max-width: 480px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 16px; margin: 32px 0 24px; }
+  .facts { font-size: 14px; color: rgba(255, 255, 255, 0.82); margin: 0; }
 
-<!-- HERO: сравнение «сотни для всех» и «три под задачу» -->
-<section class="stage-field" id="top">
-  <header class="wrap topbar">
+  /* карточка-пример результата: лист на кальке */
+  .result { position: relative; background: var(--white); color: var(--text); border-radius: var(--r-card); padding: 24px; box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28); }
+  .result-tag { position: absolute; top: -12px; left: 24px; background: var(--orange); color: var(--navy-dark); font-size: 12px; font-weight: 800; border-radius: var(--r-sm); padding: 4px 12px; }
+  .result h3 { font-size: 14px; color: var(--muted); font-family: "Montserrat", sans-serif; font-weight: 700; margin: 8px 0 16px; }
+  .ask { background: var(--bg2); border-radius: var(--r-btn) var(--r-btn) var(--r-btn) 4px; padding: 12px 16px; font-size: 14px; margin-bottom: 8px; max-width: 88%; }
+  .ans { background: var(--navy); color: var(--white); border-radius: var(--r-btn) var(--r-btn) 4px var(--r-btn); padding: 12px 16px; font-size: 14px; margin: 0 0 20px auto; max-width: 80%; }
+  .scen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .scen div { border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 8px; text-align: center; }
+  .scen b { display: block; font: 700 20px/1.2 "Unbounded", sans-serif; color: var(--navy); letter-spacing: -0.015em; }
+  .scen span { font-size: 12px; color: var(--muted); display: block; hyphens: auto; overflow-wrap: anywhere; line-height: 1.3; }
+  .scen .rec { border: 2px solid var(--orange); }
+  .scen .rec span { color: var(--navy); font-weight: 700; }
+  .result ul { list-style: none; padding: 0; margin: 0; font-size: 14px; }
+  .result li { display: flex; gap: 8px; padding: 8px 0; border-top: 1px dashed var(--border); }
+  .result li::before { content: "+"; color: var(--orange); font-weight: 800; }
+  .result-dim { margin-top: 16px; }
+  .result-dim span { background: var(--white); color: var(--muted); }
+  .result-dim { color: var(--muted); }
+
+  .section { padding: 112px 0; }
+  .intro { max-width: 640px; color: var(--text); margin-bottom: 48px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+
+  /* сравнение одной строкой под первым экраном */
+  .versus { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 72px; border-top: 1px solid var(--line2); }
+  .versus div { padding: 20px 24px 0 0; }
+  .versus dt { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.76); margin-bottom: 8px; }
+  .versus dd { margin: 0; font-size: 14px; }
+  .versus .old { color: rgba(255, 255, 255, 0.76); text-decoration: line-through; text-decoration-color: rgba(251, 146, 60, 0.7); }
+  .versus .new { color: var(--white); font-weight: 700; }
+
+  /* формула потолка: размерная линия под числом */
+  .equation { margin: 32px 0 8px; }
+  .equation .eq-top { font: 700 20px/1.3 "Unbounded", sans-serif; color: var(--navy); }
+  .equation .eq-big { font: 800 56px/1.1 "Unbounded", sans-serif; color: var(--navy); letter-spacing: -0.02em; }
+  .equation .dim { color: var(--orange); margin-top: 8px; }
+  .equation .dim span { background: var(--bg2); color: var(--navy); }
+  .note { font-size: 14px; color: var(--muted); }
+  .fears { list-style: none; padding: 0; margin: 0; }
+  .fears li { padding: 24px 0; border-top: 1px solid var(--border); display: grid; grid-template-columns: 40px 1fr; gap: 16px; }
+  .fears .n { font: 700 14px "Unbounded", sans-serif; color: var(--orange); padding-top: 4px; }
+  .fears b { display: block; font: 700 20px/1.3 "Unbounded", sans-serif; color: var(--navy); margin-bottom: 8px; letter-spacing: -0.015em; }
+  .alt { background: var(--bg2); }
+
+  /* три промпта: чертёжные листы */
+  .prompts { list-style: none; padding: 0; margin: 0; display: grid; gap: 24px; }
+  .prompts > li { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 32px; background: var(--white); border: 1px solid var(--border); border-radius: var(--r-card); padding: 32px; position: relative; }
+  .pnum { font: 800 56px/1 "Unbounded", sans-serif; color: var(--orange); letter-spacing: -0.02em; margin-bottom: 12px; }
+  .prompts h3 { margin-bottom: 8px; }
+  .prompts p { font-size: 14px; color: var(--muted); margin: 0; }
+  .who { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .prompts q { display: block; background: var(--navy); color: var(--white); border-radius: var(--r-btn) var(--r-btn) var(--r-btn) 4px; padding: 12px 16px; font-size: 14px; margin-bottom: 8px; quotes: none; }
+  .gives { font-size: 14px; border-left: 2px solid var(--orange); padding-left: 16px; }
+
+  /* чек-лист */
+  .check { list-style: none; padding: 0; margin: 0; }
+  .check label { display: grid; grid-template-columns: 32px 1fr; gap: 16px; padding: 20px 0; border-top: 1px solid var(--border); cursor: pointer; font-weight: 700; color: var(--navy); font-size: 16px; }
+  .check input { appearance: none; width: 28px; height: 28px; margin: 0; border: 2px solid var(--navy); border-radius: var(--r-sm); background: var(--white); cursor: pointer; transition: background-color .2s var(--ease); display: grid; place-items: center; }
+  .check input:checked { background: var(--navy); }
+  .check input:checked::after { content: ""; width: 12px; height: 6px; border-left: 3px solid var(--orange-light); border-bottom: 3px solid var(--orange-light); transform: translateY(-2px) rotate(-45deg); }
+  .check label:hover input { box-shadow: 0 0 0 4px var(--ink); }
+  .verdict { margin-top: 24px; border-radius: var(--r-card); padding: 20px 24px; background: var(--navy); color: var(--white); display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; }
+  .verdict b { font: 800 40px/1 "Unbounded", sans-serif; color: var(--orange-light); }
+  .verdict p { margin: 0; font-size: 14px; }
+  .tip { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-card); padding: 24px; margin-top: 24px; font-size: 14px; }
+  .tip b { display: block; color: var(--navy); margin-bottom: 8px; }
+
+  /* PDF и для кого */
+  .extras { list-style: none; padding: 0; margin: 0 0 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .extras li { font-size: 14px; }
+  .extras b { display: block; font-size: 16px; color: var(--navy); margin-bottom: 4px; }
+  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .shots img { border-radius: var(--r-sm); box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .shots figcaption { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .fit { padding-left: 20px; } .fit li { margin-bottom: 8px; } .fit li::marker { color: var(--orange); }
+  .limits { border-radius: var(--r-card); padding: 32px; margin-top: 32px; }
+  .limits p { font-size: 14px; color: rgba(255, 255, 255, 0.88); }
+  .limits p:last-child { margin: 0; }
+
+  /* дорожка 4 недель: шкала с засечками */
+  .road { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
+  .road::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 1px; background: var(--orange-light); }
+  .road li { position: relative; padding: 32px 16px 0 0; font-size: 14px; color: rgba(255, 255, 255, 0.82); }
+  .road li::before { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 16px; background: var(--orange-light); }
+  .road li:first-child::after { content: ""; position: absolute; left: -6px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--orange); }
+  .road b { display: block; font: 700 16px "Unbounded", sans-serif; color: var(--white); margin-bottom: 8px; }
+
+  /* статьи */
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .card { display: flex; flex-direction: column; gap: 8px; padding: 12px 12px 20px; background: var(--white); border: 1px solid var(--border); border-radius: var(--r-card); text-decoration: none; color: var(--text); transition: transform .2s var(--ease), box-shadow .2s var(--ease); }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .card:active { transform: translateY(-2px); }
+  .card img { border-radius: var(--r-sm); margin-bottom: 8px; }
+  .card b { font: 700 16px/1.3 "Unbounded", sans-serif; color: var(--navy); padding: 0 4px; }
+  .card span { font-size: 14px; color: var(--muted); padding: 0 4px; }
+  .card.calc { background: var(--navy); border-color: var(--navy); }
+  .card.calc b { color: var(--white); } .card.calc span { color: rgba(255, 255, 255, 0.82); }
+
+  /* цена */
+  .price-card { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; background: var(--white); border-radius: var(--r-card); padding: 48px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .price-card ul { padding-left: 20px; margin: 16px 0 0; } .price-card li { margin-bottom: 8px; } .price-card li::marker { color: var(--orange); }
+  .price { font: 800 72px/1 "Unbounded", sans-serif; color: var(--navy); letter-spacing: -0.02em; }
+  .price-dim { color: var(--orange); margin: 8px 0 24px; max-width: 280px; }
+  .price-dim span { background: var(--white); color: var(--muted); }
+  .pay-note { font-size: 14px; color: var(--muted); margin: 16px 0 0; }
+  .muted { color: var(--muted); font-size: 14px; }
+
+  /* вопросы */
+  .faq { display: grid; grid-template-columns: 1fr 2fr; gap: 64px; }
+  details { border-top: 1px solid var(--border); }
+  details:last-child { border-bottom: 1px solid var(--border); }
+  summary { list-style: none; cursor: pointer; font-weight: 700; color: var(--navy); padding: 20px 48px 20px 0; position: relative; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; position: absolute; right: 8px; top: 14px; font: 400 28px/1 "Unbounded", sans-serif; color: var(--orange); transition: transform .3s var(--ease); }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { margin: 0 0 20px; font-size: 14px; }
+
+  .final { text-align: center; padding: 112px 0; }
+  .final h2 { font-size: 56px; }
+  .final p { max-width: 560px; margin: 0 auto 32px; color: rgba(255, 255, 255, 0.88); }
+
+  @media (max-width: 960px) {
+    .hero-grid, .split, .faq, .price-card { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+    .hero h1 { font-size: 56px; }
+    .versus { grid-template-columns: 1fr 1fr; row-gap: 24px; }
+    .prompts > li { grid-template-columns: 1fr; gap: 20px; }
+    .cards { grid-template-columns: 1fr 1fr; }
+    .road { grid-template-columns: 1fr; }
+    .road::before { left: 7px; right: auto; top: 0; bottom: 0; width: 1px; height: auto; }
+    .road li { padding: 0 0 24px 32px; }
+    .road li::before { top: 7px; width: 16px; height: 1px; }
+    .road li:first-child::after { left: 2px; top: 2px; }
+  }
+  @media (max-width: 600px) {
+    .hero { padding-bottom: 64px; }
+    .hero-grid { padding-top: 16px; }
+    .hero h1 { font-size: 40px; }
+    .hero h1 .nw { white-space: normal; }
+    .lead { font-size: 16px; }
+    .section { padding: 72px 0; }
+    .equation .eq-big, .price { font-size: 40px; }
+    .final h2 { font-size: 28px; }
+    .versus { grid-template-columns: 1fr; margin-top: 48px; }
+    .extras, .shots, .cards { grid-template-columns: 1fr; }
+    .scen b { font-size: 16px; }
+    .result { padding: 20px 16px; }
+    .price-card { padding: 24px; }
+    .prompts > li { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+<section class="dark hero" id="top">
+  <header class="wrap top">
     <a class="logo" href="#top">AI TOOLBOX</a>
-    <a class="btn btn-ghost" href="https://pay.ai-toolbox.ru">Купить</a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="/stati/">Статьи</a>
+      <a class="hide-m" href="/kalkulyator/">Калькулятор</a>
+      <a class="btn btn-outline btn-sm" href="https://pay.ai-toolbox.ru">Купить</a>
+    </nav>
   </header>
-  <div class="wrap hero">
-    <div class="hero-copy">
-      <h1>Три промпта вместо сотни</h1>
-      <p class="lead">Все три про одну задачу: сколько брать за вашу услугу.</p>
+  <div class="wrap hero-grid">
+    <div>
+      <p class="sheet-no">Архитектор чека · PDF</p>
+      <h1><span class="nw">Три промпта</span> <em>вместо</em> сотни</h1>
+      <p class="lead">Все три про одну задачу: сколько брать за вашу услугу. Промпт задаёт вопросы по одному и собирает целевую цену, обоснование для клиентов и план перехода на 4 недели.</p>
       <div class="actions">
         <a class="btn btn-primary" href="https://pay.ai-toolbox.ru">Купить за 690 ₽</a>
-        <a class="btn btn-outline" href="#inside">Что внутри</a>
+        <a class="btn btn-outline" href="/kalkulyator/">Посчитать цену часа бесплатно</a>
       </div>
       <p class="facts">PDF, 37 страниц · около часа на промпт · ChatGPT, Claude, GigaChat, YandexGPT</p>
     </div>
-
-    <figure class="compare-stage" id="stage" data-view="three">
-      <div class="switch" role="group" aria-label="Что показать">
-        <button type="button" data-view="pile" aria-pressed="false">Сотни для всех</button>
-        <button type="button" data-view="three" aria-pressed="true">Три под задачу</button>
+    <figure class="result" aria-label="Условный пример результата промпта №1" style="margin:0">
+      <span class="result-tag">Условный пример</span>
+      <h3>Промпт №1 «Архитектор чека» · маникюр, сейчас 1 600 ₽</h3>
+      <p class="ask">Какие цены у конкурентов? Нижняя, средняя, верхняя планка.</p>
+      <p class="ans">1 400, 1 900 и 2 600 ₽ по моему району</p>
+      <div class="scen">
+        <div><b>1&#8239;800</b><span>осторожный</span></div>
+        <div class="rec"><b>2&#8239;000</b><span>рекомендованный</span></div>
+        <div><b>2&#8239;400</b><span>с переупаковкой</span></div>
       </div>
-      <div class="table-top">
-        <div class="pile" aria-hidden="true">
-          <span class="slip" style="--sx:-18px;--sy:-30px;--sr:-6deg;--fx:-190px;--fy:-150px;--fr:-9deg">Пост для соцсетей</span>
-          <span class="slip" style="--sx:14px;--sy:-22px;--sr:4deg;--fx:150px;--fy:-160px;--fr:7deg">Слоган для бренда</span>
-          <span class="slip" style="--sx:-8px;--sy:-10px;--sr:-2deg;--fx:-40px;--fy:-110px;--fr:-3deg">План питания</span>
-          <span class="slip" style="--sx:20px;--sy:0px;--sr:6deg;--fx:190px;--fy:-80px;--fr:11deg">Резюме</span>
-          <span class="slip" style="--sx:-22px;--sy:8px;--sr:-8deg;--fx:-200px;--fy:-40px;--fr:-12deg">Письмо клиенту</span>
-          <span class="slip" style="--sx:6px;--sy:16px;--sr:3deg;--fx:60px;--fy:-20px;--fr:4deg">Сценарий видео</span>
-          <span class="slip" style="--sx:-12px;--sy:24px;--sr:-4deg;--fx:-120px;--fy:40px;--fr:-6deg">Описание товара</span>
-          <span class="slip" style="--sx:16px;--sy:30px;--sr:5deg;--fx:170px;--fy:30px;--fr:8deg">Контент-план</span>
-          <span class="slip" style="--sx:-4px;--sy:38px;--sr:-3deg;--fx:10px;--fy:80px;--fr:-2deg">Поздравление коллегам</span>
-          <span class="slip" style="--sx:10px;--sy:44px;--sr:2deg;--fx:-190px;--fy:120px;--fr:-5deg">Бизнес-план</span>
-          <span class="slip" style="--sx:-16px;--sy:50px;--sr:-5deg;--fx:150px;--fy:130px;--fr:6deg">Идеи для отпуска</span>
-          <span class="slip" style="--sx:4px;--sy:56px;--sr:1deg;--fx:-20px;--fy:160px;--fr:3deg">Тост на свадьбу</span>
-        </div>
-        <ol class="three">
-          <li><span class="num">1</span><b>Архитектор чека</b><span>Считает цену: интервью из 6 стадий</span></li>
-          <li><span class="num">2</span><b>Аудит услуги</b><span>Готовит услугу к новой цене</span></li>
-          <li><span class="num">3</span><b>Архитектор премиум-оффера</b><span>Следующий шаг, по желанию</span></li>
-        </ol>
-      </div>
-      <figcaption id="stage-caption">Три промпта под одну задачу. Нажмите «Сотни для всех», чтобы сравнить.</figcaption>
+      <ul>
+        <li>Короткое предложение для клиентов</li>
+        <li>План перехода на 4 недели</li>
+      </ul>
+      <div class="dim result-dim" aria-hidden="true"><i></i><span>три сценария цены</span><i></i></div>
     </figure>
   </div>
-</section>
-
-<!-- СРАВНЕНИЕ -->
-<section class="sheet">
   <div class="wrap">
-    <h2>Чем три лучше сотни</h2>
-    <p class="intro">Сборник на сотни промптов даёт понемногу на каждую тему. Здесь все три работают на один вопрос: какая цена у вашей услуги и как на неё перейти. Промпт задаёт вопросы по одному и собирает целевую цену, обоснование для клиентов и план перехода на 4 недели.</p>
-    <dl class="versus">
-      <div class="versus-head" aria-hidden="true"><span></span><span>Обычный сборник</span><span>Архитектор чека</span></div>
-      <div><dt>Сколько промптов</dt><dd data-label="Обычный сборник">Сотни, на все случаи</dd><dd data-label="Архитектор чека">Три, по порядку</dd></div>
-      <div><dt>Как работает</dt><dd data-label="Обычный сборник">Один запрос, один ответ</dd><dd data-label="Архитектор чека">Интервью: вопросы по одному, советов до конца стадии нет</dd></div>
-      <div><dt>Из чего ответ</dt><dd data-label="Обычный сборник">Из общих слов модели</dd><dd data-label="Архитектор чека">Из ваших цифр, клиентов и страхов</dd></div>
-      <div><dt>Что на выходе</dt><dd data-label="Обычный сборник">Текст на тему</dd><dd data-label="Архитектор чека">Три сценария цены, короткое предложение для клиентов, план на 4 недели</dd></div>
+    <dl class="versus" aria-label="Обычный сборник и Архитектор чека">
+      <div><dt>Сколько промптов</dt><dd class="old">Сотни, на все случаи</dd><dd class="new">Три, по порядку</dd></div>
+      <div><dt>Как работает</dt><dd class="old">Один запрос, один ответ</dd><dd class="new">Интервью: вопросы по одному</dd></div>
+      <div><dt>Из чего ответ</dt><dd class="old">Из общих слов модели</dd><dd class="new">Из ваших цифр, клиентов и страхов</dd></div>
+      <div><dt>Что на выходе</dt><dd class="old">Текст на тему</dd><dd class="new">Три сценария цены и план на 4 недели</dd></div>
     </dl>
   </div>
 </section>
 
-<!-- ПРОБЛЕМА -->
-<section class="sheet alt">
+<section class="section alt">
   <div class="wrap split">
-    <div>
+    <div class="reveal">
+      <p class="sheet-no">Лист 01 · Потолок</p>
       <h2>Цена «как у конкурентов»?</h2>
       <p>Или «чтобы не было неловко». Большинство специалистов выбирают цену одним из этих двух способов и упираются в потолок часов.</p>
-      <p class="equation"><span>40 ч × 4 недели × 800 ₽</span><span>= 128 000 ₽</span></p>
+      <div class="equation">
+        <div class="eq-top">40 ч × 4 недели × 800 ₽</div>
+        <div class="eq-big">128 000 ₽</div>
+        <div class="dim" aria-hidden="true"><i></i><span>потолок при полной загрузке</span><i></i></div>
+      </div>
       <p class="note">Столько при полной загрузке без отпуска. Полной загрузки не бывает.</p>
     </div>
-    <ul class="fears">
-      <li><b>«Клиенты уйдут»</b><span>Часть действительно уходит. В PDF разобрано, кто именно уходит при повышении и как посчитать доход с учётом этих потерь.</span></li>
-      <li><b>«У нас не Москва»</b><span>Это убеждение проверяется за пять минут на Авито, Профи.ру или Яндекс Услугах: отсортируйте по цене.</span></li>
-      <li><b>«Я ещё недостаточно хорош»</b><span>Чаще всего дело не в навыках. Специалист не умеет сформулировать, что на самом деле получают его клиенты.</span></li>
+    <ul class="fears reveal">
+      <li><span class="n">01</span><div><b>«Клиенты уйдут»</b>Часть действительно уходит. В PDF разобрано, кто именно уходит при повышении и как посчитать доход с учётом этих потерь.</div></li>
+      <li><span class="n">02</span><div><b>«У нас не Москва»</b>Это убеждение проверяется за пять минут на Авито, Профи.ру или Яндекс Услугах: отсортируйте по цене.</div></li>
+      <li><span class="n">03</span><div><b>«Я ещё недостаточно хорош»</b>Чаще всего дело не в навыках. Специалист не умеет сформулировать, что именно получают его клиенты.</div></li>
     </ul>
   </div>
 </section>
 
-<!-- ЧТО ВНУТРИ: три промпта -->
-<section class="sheet" id="inside">
+<section class="section paper" id="inside">
   <div class="wrap">
+    <p class="sheet-no">Лист 02 · Что внутри</p>
     <h2>Что спрашивает каждый промпт</h2>
     <p class="intro">Вы копируете промпт в чат с нейросетью и отвечаете. Ниже настоящие вопросы и стадии из промптов.</p>
     <ol class="prompts">
-      <li>
-        <div class="p-name"><span class="num">1</span><h3>Архитектор чека</h3><p>Интервью из 6 стадий: текущее положение, скрытая ценность, ценовой потолок, цель, обоснование, план.</p></div>
-        <div class="p-asks"><span class="who">Промпт спрашивает</span><q>Какие цены у конкурентов? Нижняя, средняя, верхняя планка.</q><q>Эта цель ощущается реальной или страшной?</q></div>
-        <div class="p-gives"><b>На выходе</b>Три сценария цены: осторожный, рекомендованный, с переупаковкой услуги. Короткое предложение для клиентов и план на 4 недели.</div>
+      <li class="reveal">
+        <div><div class="pnum">01</div><h3>Архитектор чека</h3><p>Интервью из 6 стадий: текущее положение, скрытая ценность, ценовой потолок, цель, обоснование, план.</p></div>
+        <div><span class="who">Промпт спрашивает</span><q>Какие цены у конкурентов? Нижняя, средняя, верхняя планка.</q><q>Эта цель ощущается реальной или страшной?</q></div>
+        <div class="gives"><span class="who">На выходе</span>Три сценария цены: осторожный, рекомендованный, с переупаковкой услуги. Короткое предложение для клиентов и план на 4 недели.</div>
       </li>
-      <li>
-        <div class="p-name"><span class="num">2</span><h3>Аудит услуги</h3><p>Для тех, у кого новая цена уже посчитана: готова ли услуга её выдержать.</p></div>
-        <div class="p-asks"><span class="who">Промпт спрашивает</span><q>Что в текущей версии НЕ оправдывает новую цену?</q><q>Какие возражения слышите чаще всего?</q></div>
-        <div class="p-gives"><b>На выходе</b>Оценка 7 параметров услуги от 1 до 10, 3-5 действий первой очереди и срок подготовки с контрольными точками.</div>
+      <li class="reveal">
+        <div><div class="pnum">02</div><h3>Аудит услуги</h3><p>Для тех, у кого новая цена уже посчитана: готова ли услуга её выдержать.</p></div>
+        <div><span class="who">Промпт спрашивает</span><q>Что в текущей версии НЕ оправдывает новую цену?</q><q>Какие возражения слышите чаще всего?</q></div>
+        <div class="gives"><span class="who">На выходе</span>Оценка 7 параметров услуги от 1 до 10, 3-5 действий первой очереди и срок подготовки с контрольными точками.</div>
       </li>
-      <li>
-        <div class="p-name"><span class="num">3</span><h3>Архитектор премиум-оффера</h3><p>Следующий шаг, когда цена уже поднята: упаковать опыт в дорогой продукт или программу наставничества.</p></div>
-        <div class="p-asks"><span class="who">Промпт спрашивает</span><q>Путь и поворотные моменты</q><q>Навыки, которые можно продавать</q><q>Кому нужен ваш опыт</q></div>
-        <div class="p-gives"><b>На выходе</b>Формат, состав и обоснование цены продукта, ответы на первые возражения.</div>
+      <li class="reveal">
+        <div><div class="pnum">03</div><h3>Архитектор премиум-оффера</h3><p>Следующий шаг, когда цена уже поднята: упаковать опыт в дорогой продукт или программу наставничества.</p></div>
+        <div><span class="who">Промпт спрашивает</span><q>Путь и поворотные моменты</q><q>Навыки, которые можно продавать</q><q>Кому нужен ваш опыт</q></div>
+        <div class="gives"><span class="who">На выходе</span>Формат, состав и обоснование цены продукта, ответы на первые возражения.</div>
       </li>
     </ol>
   </div>
 </section>
 
-<!-- ЕЩЁ В PDF -->
-<section class="sheet alt">
+<section class="section">
   <div class="wrap split">
-    <div>
-      <h2>Ещё в PDF</h2>
-      <ul class="extras">
-        <li><b>Чек-лист из 13 вопросов.</b> Поднимать цену сейчас или сначала пройти аудит услуги.</li>
-        <li><b>Шаблоны сообщений.</b> Как предупредить текущих и давних клиентов о новой цене, и ответы на возражение «дорого».</li>
-        <li><b>Подсказки к каждому промпту.</b> Если модель задаёт все вопросы сразу или отвечает за вас, там есть фраза, которая это исправляет.</li>
-        <li><b>Для бесплатных тарифов.</b> Первый промпт по стадиям: шесть коротких промптов, каждый в новом чате. И все промпты на английском.</li>
-      </ul>
-    </div>
-    <div class="shots">
-      <figure>
-        <img src="img/prompt.jpg" width="720" height="1017" loading="lazy" alt="Разворот PDF с промптом №1. Текст промпта скрыт">
-        <figcaption>Разворот с промптом №1. Текст промпта здесь скрыт.</figcaption>
-      </figure>
-      <figure>
-        <img src="img/tablica.jpg" width="720" height="644" loading="lazy" alt="Разворот PDF: таблица типичных изменений услуги после аудита по нишам">
-        <figcaption>Справочник: что чаще всего меняют в услуге после аудита.</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ПОЛЬЗА -->
-<section class="sheet">
-  <div class="wrap split">
-    <div>
+    <div class="reveal">
+      <p class="sheet-no">Лист 03 · Проверка</p>
       <h2>Проверьте себя по трём вопросам</h2>
       <p>Это три пункта из чек-листа «Готов ли я поднимать цену?». Всего в нём 13 вопросов.</p>
-      <div class="tip">
-        <b>Совет из PDF для любой нейросети</b>
-        <p>Отвечайте цифрами. «5 лет, веду 25 учеников одновременно» сильнее, чем «5 лет». «С 2019 года, постоянных клиентов около 60» сильнее, чем «давно работаю». Без цифр модель выдаёт шаблонный ответ.</p>
+      <div class="tip"><b>Совет из PDF для любой нейросети</b>Отвечайте цифрами. «5 лет, веду 25 учеников одновременно» сильнее, чем «5 лет». «С 2019 года, постоянных клиентов около 60» сильнее, чем «давно работаю». Без цифр модель выдаёт шаблонный ответ.</div>
+    </div>
+    <div class="reveal">
+      <ul class="check" id="check">
+        <li><label><input type="checkbox"><span>Я могу описать результат услуги в измеримых терминах: не «помогаю расти», а «8 учеников сдали ЕГЭ на 85+».</span></label></li>
+        <li><label><input type="checkbox"><span>Я могу уверенно ответить на вопрос «почему так дорого?» без оправданий.</span></label></li>
+        <li><label><input type="checkbox"><span>Я знаю ценовую вилку конкурентов в своей нише и городе: нижняя, средняя и верхняя планка.</span></label></li>
+      </ul>
+      <div class="verdict" aria-live="polite"><b id="v-n">0/3</b><p id="v-t">Начните с промпта №2 «Аудит услуги»: он покажет, что подготовить до новой цены.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap split">
+    <div class="reveal">
+      <p class="sheet-no">Лист 04 · Состав и адресат</p>
+      <h2>Ещё в PDF</h2>
+      <ul class="extras">
+        <li><b>Чек-лист из 13 вопросов.</b>Поднимать цену сейчас или сначала пройти аудит услуги.</li>
+        <li><b>Шаблоны сообщений.</b>Как предупредить текущих и давних клиентов о новой цене, и ответы на возражение «дорого».</li>
+        <li><b>Подсказки к каждому промпту.</b>Если модель задаёт все вопросы сразу или отвечает за вас, там есть фраза, которая это исправляет.</li>
+        <li><b>Для бесплатных тарифов.</b>Первый промпт по стадиям: шесть коротких промптов, каждый в новом чате. И все промпты на английском.</li>
+      </ul>
+      <div class="shots">
+        <figure style="margin:0"><img src="/img/prompt.jpg" width="720" height="1017" loading="lazy" alt="Разворот PDF с промптом №1. Текст промпта скрыт"><figcaption>Разворот с промптом №1. Текст промпта здесь скрыт.</figcaption></figure>
+        <figure style="margin:0"><img src="/img/tablica.jpg" width="720" height="644" loading="lazy" alt="Разворот PDF: таблица типичных изменений услуги после аудита по нишам"><figcaption>Справочник: что чаще всего меняют в услуге после аудита.</figcaption></figure>
       </div>
     </div>
-    <ul class="checklist">
-      <li><label><input type="checkbox"><span>Я могу описать результат услуги в измеримых терминах: не «помогаю расти», а «8 учеников сдали ЕГЭ на 85+».</span></label></li>
-      <li><label><input type="checkbox"><span>Я могу уверенно ответить на вопрос «почему так дорого?» без оправданий.</span></label></li>
-      <li><label><input type="checkbox"><span>Я знаю ценовую вилку конкурентов в своей нише и городе: нижняя, средняя и верхняя планка.</span></label></li>
-    </ul>
-  </div>
-</section>
-
-<!-- КАК ЭТО РАБОТАЕТ -->
-<section class="sheet alt">
-  <div class="wrap">
-    <h2>Четыре недели перехода</h2>
-    <p class="intro">План из PDF. Меньше четырёх недель не стоит: клиенты не должны почувствовать резкость.</p>
-    <ol class="road">
-      <li><span class="step">Сегодня</span><p>Указываете почту и оплачиваете картой или по СБП. PDF приходит письмом сразу после оплаты.</p></li>
-      <li><span class="step">Неделя 1</span><p>Проходите промпты №1 и №2. Новая цена определена, список улучшений готов.</p></li>
-      <li><span class="step">Неделя 2</span><p>Внедряете 2-3 улучшения из аудита, обновляете описание услуги, готовите сообщение клиентам.</p></li>
-      <li><span class="step">Неделя 3</span><p>Предупреждаете текущих клиентов и предлагаете последние записи по старой цене.</p></li>
-      <li><span class="step">Неделя 4</span><p>Обновляете профили во всех каналах. Новые клиенты записываются уже по новой цене.</p></li>
-    </ol>
-  </div>
-</section>
-
-<!-- ДЛЯ КОГО -->
-<section class="sheet">
-  <div class="wrap split">
-    <div>
+    <div class="reveal">
       <h2>Для кого</h2>
       <p>Для специалистов индивидуальных услуг с оплатой за час или пакет: репетиторы, психологи, мастера маникюра, парикмахеры, массажисты, фитнес-тренеры, фотографы, копирайтеры, дизайнеры, бухгалтеры-фрилансеры.</p>
       <ul class="fit">
@@ -193,22 +314,51 @@
         <li>Берёте меньше рынка и боитесь повышать.</li>
         <li>Пора переходить от часов к пакетам, а как упаковать, непонятно.</li>
       </ul>
-      <p class="not-fit"><b>Не подойдёт,</b> если вы продаёте товары: там цена строится от себестоимости и конкурентов. И не нужен, если вы уверены в своих ценах.</p>
-    </div>
-    <div class="limits">
-      <h3>Честно о границах</h3>
-      <p>Это инструмент. Цена, которую вы получите, зависит от ваших ответов на вопросы промпта.</p>
-      <p>Примеры в PDF условные: это не реальные клиенты. Внутри это прямо отмечено.</p>
-      <p>Финансовый результат зависит от ваших действий и не гарантируется.</p>
+      <p><b>Не подойдёт,</b> если вы продаёте товары: там цена строится от себестоимости и конкурентов. И не нужен, если вы уверены в своих ценах.</p>
+      <div class="limits dark">
+        <h3>Честно о границах</h3>
+        <p>Это инструмент. Цена, которую вы получите, зависит от ваших ответов на вопросы промпта.</p>
+        <p>Примеры в PDF условные: это не реальные клиенты. Внутри это прямо отмечено.</p>
+        <p>Финансовый результат зависит от ваших действий и не гарантируется.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ЦЕНА -->
-<section class="sheet alt" id="price">
+<section class="section dark">
   <div class="wrap">
-    <div class="price-card">
+    <p class="sheet-no">Лист 05 · План</p>
+    <h2>Четыре недели перехода</h2>
+    <p class="intro" style="color:rgba(255,255,255,.82)">План из PDF. Меньше четырёх недель не стоит: клиенты не должны почувствовать резкость.</p>
+    <ol class="road">
+      <li><b>Сегодня</b>Указываете почту и оплачиваете картой или по СБП. PDF приходит письмом сразу после оплаты.</li>
+      <li><b>Неделя 1</b>Проходите промпты №1 и №2. Новая цена определена, список улучшений готов.</li>
+      <li><b>Неделя 2</b>Внедряете 2-3 улучшения из аудита, обновляете описание услуги, готовите сообщение клиентам.</li>
+      <li><b>Неделя 3</b>Предупреждаете текущих клиентов и предлагаете последние записи по старой цене.</li>
+      <li><b>Неделя 4</b>Обновляете профили во всех каналах. Новые клиенты записываются уже по новой цене.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="section paper">
+  <div class="wrap">
+    <p class="sheet-no">Лист 06 · Бесплатно</p>
+    <h2>Посчитать до покупки</h2>
+    <p class="intro">Калькулятор и статьи: себестоимость, цена часа, повышение и сообщение клиентам.</p>
+    <div class="cards">
+      <a class="card calc" href="/kalkulyator/"><img src="/img/stati/kalkulyator.webp" alt="" width="1600" height="898" loading="lazy"><b>Калькулятор часа и цены услуги</b><span>Минимальная цена часа и одной процедуры по вашим расходам, налогу и загрузке.</span></a>
+      <a class="card" href="/stati/sebestoimost-uslugi-formula-i-primer/"><img src="/img/stati/sebestoimost-uslugi.webp" alt="" width="1600" height="898" loading="lazy"><b>Себестоимость услуги</b><span>Формула для мастера, пример для маникюра и сколько стоит пустое окно в записи.</span></a>
+      <a class="card" href="/stati/kak-podnyat-ceny-na-svoi-uslugi/"><img src="/img/stati/kak-podnyat-ceny.webp" alt="" width="1600" height="898" loading="lazy"><b>Как поднять цены</b><span>Сколько клиентов можно потерять без потери выручки и когда повышать рано.</span></a>
+      <a class="card" href="/stati/kak-soobshchit-klientam-o-povyshenii-cen/"><img src="/img/stati/kak-soobshchit.webp" alt="" width="1600" height="898" loading="lazy"><b>Как сообщить клиентам о повышении</b><span>Готовые сообщения клиентам и родителям, письмо компании и промпт.</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="price">
+  <div class="wrap">
+    <div class="price-card reveal">
       <div>
+        <p class="sheet-no">Спецификация</p>
         <h2>Архитектор чека</h2>
         <p class="muted">PDF, 37 страниц, русский язык и приложение на английском</p>
         <ul>
@@ -220,51 +370,32 @@
           <li>Промпт №1 по стадиям для бесплатных тарифов</li>
         </ul>
       </div>
-      <div class="price-buy">
+      <div>
         <div class="price">690 ₽</div>
+        <div class="dim price-dim" aria-hidden="true"><i></i><span>PDF, 37 страниц</span><i></i></div>
         <p>Вместо того чтобы самому собирать по статьям, как считать цену и что сказать клиентам, вы получаете готовую последовательность вопросов и шаблоны.</p>
         <a class="btn btn-primary" href="https://pay.ai-toolbox.ru">Купить за 690 ₽</a>
-        <p class="pay-note">Оплата картой или по СБП через Робокассу. PDF и чек придут на почту, которую вы укажете при заказе. Покупая, вы принимаете условия <a href="oferta.html">оферты</a>. Открывается Telegram? Можно купить и в <a href="https://t.me/aitoolboxru_bot?start=site">боте</a>.</p>
+        <p class="pay-note">Оплата картой или по СБП через Робокассу. PDF и чек придут на почту, которую вы укажете при заказе. Покупая, вы принимаете условия <a href="/oferta.html">оферты</a>. Открывается Telegram? Можно купить и в <a href="https://t.me/aitoolboxru_bot?start=site">боте</a>.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FAQ -->
-<section class="sheet">
+<section class="section">
   <div class="wrap faq">
     <h2>Частые вопросы</h2>
     <div>
-      <details>
-        <summary>Я не пользовался ChatGPT. Разберусь?</summary>
-        <div><p>Промпт копируется целиком и вставляется в новый чат, дальше нейросеть сама ведёт вас по вопросам. Если ChatGPT недоступен, подойдёт GigaChat. Для бесплатных тарифов в PDF есть схема по стадиям.</p></div>
-      </details>
-      <details>
-        <summary>Здесь есть видео?</summary>
-        <div><p>Нет. Это PDF с тремя промптами. Промпты задают вопросы, как консультант, и на выходе дают документ: цену, текст для клиентов и план на 4 недели.</p></div>
-      </details>
-      <details>
-        <summary>Как я получу файл?</summary>
-        <div><p>Кнопка «Купить» ведёт на страницу оплаты. Вы указываете почту, оплачиваете картой или по СБП, и PDF приходит письмом, обычно в течение пары минут. Письма нет? Проверьте папку «Спам». Отдельной платы за получение нет. Если у вас открывается Telegram, можно купить и в боте @aitoolboxru_bot, тогда PDF придёт в чат.</p></div>
-      </details>
-      <details>
-        <summary>Что если ChatGPT откажется отвечать?</summary>
-        <div><p>Промпты проверяли от первого вопроса до итогового документа в ChatGPT и GigaChat. Войдите в аккаунт чата: без входа некоторые чаты отвечают упрощённой моделью. Если модель задаёт все вопросы сразу или отвечает за вас, в подсказках есть фраза, которая это исправляет.</p></div>
-      </details>
-      <details>
-        <summary>Можно вернуть деньги?</summary>
-        <div><p>Цифровой товар после получения возврату не подлежит, поэтому состав PDF полностью описан на этой странице. Если файл не пришёл или повреждён и мы не заменили его в течение 10 дней после обращения, деньги вернём полностью. Подробно - в <a href="oferta.html">оферте</a>.</p></div>
-      </details>
-      <details>
-        <summary>Подойдёт ли для продажи товаров или на маркетплейсах?</summary>
-        <div><p>Нет. Промпты построены на логике услуги: работа один на один и персональный результат. У товаров цена строится иначе.</p></div>
-      </details>
+      <details><summary>Я не пользовался ChatGPT. Разберусь?</summary><p>Промпт копируется целиком и вставляется в новый чат, дальше нейросеть сама ведёт вас по вопросам. Если ChatGPT недоступен, подойдёт GigaChat. Для бесплатных тарифов в PDF есть схема по стадиям.</p></details>
+      <details><summary>Здесь есть видео?</summary><p>Нет. Это PDF с тремя промптами. Промпты задают вопросы, как консультант, и на выходе дают документ: цену, текст для клиентов и план на 4 недели.</p></details>
+      <details><summary>Как я получу файл?</summary><p>Кнопка «Купить» ведёт на страницу оплаты. Вы указываете почту, оплачиваете картой или по СБП, и PDF приходит письмом, обычно в течение пары минут. Письма нет? Проверьте папку «Спам». Отдельной платы за получение нет. Если у вас открывается Telegram, можно купить и в боте @aitoolboxru_bot, тогда PDF придёт в чат.</p></details>
+      <details><summary>Что если ChatGPT откажется отвечать?</summary><p>Промпты проверяли от первого вопроса до итогового документа в ChatGPT и GigaChat. Войдите в аккаунт чата: без входа некоторые чаты отвечают упрощённой моделью. Если модель задаёт все вопросы сразу или отвечает за вас, в подсказках есть фраза, которая это исправляет.</p></details>
+      <details><summary>Можно вернуть деньги?</summary><p>Цифровой товар после получения возврату не подлежит, поэтому состав PDF полностью описан на этой странице. Если файл не пришёл или повреждён и мы не заменили его в течение 10 дней после обращения, деньги вернём полностью. Подробно - в <a href="/oferta.html">оферте</a>.</p></details>
+      <details><summary>Подойдёт ли для продажи товаров или на маркетплейсах?</summary><p>Нет. Промпты построены на логике услуги: работа один на один и персональный результат. У товаров цена строится иначе.</p></details>
     </div>
   </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="final">
+<section class="dark final">
   <div class="wrap">
     <h2>Пора посчитать свою цену</h2>
     <p>Цена «чтобы не было неловко» держит доход на месте. Около часа диалога с нейросетью, и у вас будет цифра, обоснование для клиентов и план на месяц.</p>
@@ -274,52 +405,28 @@
 
 <footer>
   <div class="wrap">
-    <div>
-      Самозанятый Юров Александр Владимирович, ИНН 500108707504, г.&nbsp;Новосибирск<br>
+    <div>Самозанятый Юров Александр Владимирович, ИНН 500108707504, г.&nbsp;Новосибирск<br>
       Почта: <a href="mailto:aitoolbox.help@yandex.ru">aitoolbox.help@yandex.ru</a><br>
-      Телефон: <a class="nowrap" href="tel:+79513830884">+7 951 383-08-84</a>
-    </div>
-    <div>
-      <a href="oferta.html">Публичная оферта</a> · <a href="politika.html">Политика обработки персональных данных</a> · <a href="https://t.me/aitoolboxru_bot?start=site">Telegram-бот</a>
-    </div>
+      Телефон: <a href="tel:+79513830884">+7 951 383-08-84</a></div>
+    <div><a href="/oferta.html">Публичная оферта</a> · <a href="/politika.html">Политика обработки персональных данных</a></div>
   </div>
 </footer>
-
 <script>
-  // Переключатель сравнения на первом экране. Без JS страница показывает «три под задачу».
-  (function () {
-    var stage = document.getElementById('stage');
-    var caption = document.getElementById('stage-caption');
-    var text = {
-      three: 'Три промпта под одну задачу. Нажмите «Сотни для всех», чтобы сравнить.',
-      pile: 'Так обычно выглядит сборник «для всех». Иллюстрация, темы условные.'
-    };
-    stage.querySelectorAll('.switch button').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var v = b.dataset.view;
-        stage.dataset.view = v;
-        caption.textContent = text[v];
-        stage.querySelectorAll('.switch button').forEach(function (o) {
-          o.setAttribute('aria-pressed', String(o === b));
-        });
-      });
-    });
-  })();
+(function () {
+  var T = ["Начните с промпта №2 «Аудит услуги»: он покажет, что подготовить до новой цены.",
+           "Начните с промпта №2 «Аудит услуги»: он покажет, что подготовить до новой цены.",
+           "Почти готово. Промпт №1 поможет закрыть оставшийся пункт.",
+           "Можно считать новую цену: промпт №1."];
+  var boxes = document.querySelectorAll("#check input");
+  function upd() { var n = Array.prototype.filter.call(boxes, function (b) { return b.checked; }).length;
+    document.getElementById("v-n").textContent = n + "/3"; document.getElementById("v-t").textContent = T[n]; }
+  boxes.forEach(function (b) { b.addEventListener("change", upd); });
+  var els = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("in"); }); return; }
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -10% 0px" });
+  els.forEach(function (e) { io.observe(e); });
+})();
 </script>
-<script>
-  // Счётчик просмотров без cookie: серверу оплаты уходят только метка из ссылки (?src=vk) и сайт,
-  // с которого пришли. Сервер хранит итоги по дням. Те же данные получают кнопки «Купить»,
-  // чтобы было видно, из какого источника доходят до оплаты.
-  (function () {
-    var label = new URLSearchParams(location.search).get('src') || '';
-    var host = '';
-    try { host = document.referrer ? new URL(document.referrer).hostname : ''; } catch (e) {}
-    var q = 's=' + encodeURIComponent(label) + '&r=' + encodeURIComponent(host);
-    new Image().src = 'https://pay.ai-toolbox.ru/c.gif?p=home&' + q;
-    document.querySelectorAll('a[href="https://pay.ai-toolbox.ru"]').forEach(function (a) {
-      a.href = 'https://pay.ai-toolbox.ru/?' + q;
-    });
-  })();
-</script>
+<script src="/motion.js"></script>
 </body>
 </html>
