@@ -81,7 +81,12 @@
   if (!scrub.length) { var first = $$("section.section h2 + p")[0]; if (first) scrub = [first]; }
   scrub.forEach(function (p) {
     p.classList.remove("m-up"); p.style.transitionDelay = "";
-    p.innerHTML = p.textContent.split(/(\s+)/).map(function (w) { return /^\s+$/.test(w) ? w : "<m-w class='ms'>" + w + "</m-w>"; }).join("");
+    var text = p.textContent; p.textContent = "";
+    text.split(/(\s+)/).forEach(function (w) {
+      if (!w) return;
+      if (/^\s+$/.test(w)) return p.appendChild(document.createTextNode(w));
+      var s = document.createElement("m-w"); s.className = "ms"; s.textContent = w; p.appendChild(s);
+    });
     p.classList.add("m-scrub");
   });
 
